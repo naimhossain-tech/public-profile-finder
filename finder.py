@@ -15,9 +15,23 @@ PLATFORMS = {
     "Reddit": "https://www.reddit.com/user/",
     "Pinterest": "https://www.pinterest.com/",
     "YouTube": "https://www.youtube.com/@",
-
+    "Instagram": "https://www.instagram.com/",
+    "TikTok": "https://www.tiktok.com/@",
+    "X": "https://x.com/",
+    "Facebook": "https://www.facebook.com/",
+    "LinkedIn": "https://www.linkedin.com/in/",
+    "Medium": "https://medium.com/@",
+    "Twitch": "https://www.twitch.tv/",
+    "Tumblr": "https://www.tumblr.com/",
+    "Telegram": "https://t.me/",
+    "Snapchat": "https://www.snapchat.com/add/",
+    "Threads": "https://www.threads.net/@",
+    "SoundCloud": "https://soundcloud.com/",
+    "Vimeo": "https://vimeo.com/",
+    "GitLab": "https://gitlab.com/",
+    "Keybase": "https://keybase.io/",
+    "Dev.to": "https://dev.to/",
 }
-
 
 
 def check_public_page(url):
@@ -27,24 +41,24 @@ def check_public_page(url):
     )
 
     try:
-        with urllib.request.urlopen(request, timeout=15) as response:
+        with urllib.request.urlopen(request, timeout=12) as response:
             return response.status, response.geturl(), (
-                "Page reachable; account not confirmed"
+                "Page reachable; profile not confirmed"
             )
 
     except urllib.error.HTTPError as error:
         if error.code == 404:
-            note = "Page not found at this URL; account unconfirmed"
+            note = "Page not found; account unconfirmed"
         elif error.code in (401, 403, 429):
-            note = "Access restricted or rate limited; inconclusive"
+            note = "Restricted or rate limited; inconclusive"
         else:
-            note = "HTTP response received; account status inconclusive"
+            note = "HTTP response received; inconclusive"
 
         return error.code, error.geturl(), note
 
     except Exception as error:
         return None, url, (
-            f"Could not verify page: {type(error).__name__}"
+            f"Could not verify: {type(error).__name__}"
         )
 
 
@@ -82,8 +96,8 @@ def find_profiles(email, username):
             "http_status": None,
             "final_url": "",
             "result": (
-                "Email-to-profile association not checked; "
-                "email alone cannot confirm social accounts"
+                "No email-to-profile match performed. "
+                "Use public search results and verify matches manually."
             ),
         })
 
@@ -114,6 +128,8 @@ def save_results(results):
 
 def main():
     print("=== Public Profile Finder ===")
+    print(f"Platforms configured: {len(PLATFORMS)}")
+
     email = input("Email (optional): ").strip()
     username = input("Username (optional): ").strip().lstrip("@")
 
